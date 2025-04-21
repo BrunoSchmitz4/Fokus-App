@@ -1,21 +1,30 @@
-import { Image, StyleSheet, View, Text, Pressable } from "react-native";
-import { useState } from "react";
+import { Image, StyleSheet, View } from "react-native";
+import { useRef, useState } from "react";
+import { FokusButton } from "../components/FokusButton";
+import { ActionButton } from "../components/ActionButton"
+import { Timer } from "../components/Timer"
+import { Footer } from "../components/Footer"
+import { DataAtual } from "../components/DataAtual"
+
 
 const pomodoro = [
     {
         id: 'focus',
         initialValue: 25,
-        image: require('./Imagem Foco.png')
+        image: require('./Imagem Foco.png'),
+        display: 'Foco'
     },
     {
         id: 'short',
         initialValue: 5,
-        image: require('./Imagem Descanso Curto.png')
+        image: require('./Imagem Descanso Curto.png'),
+        display: 'Pausa curta'
     },
     {
         id: 'long',
         initialValue: 15,
-        image: require('./Imagem Descanso Longo.png')
+        image: require('./Imagem Descanso Longo.png'),
+        display: 'Pausa longa'
 
     },
 ]
@@ -24,41 +33,41 @@ export default function Index() {
     
     const [timerType, setTimerType] = useState(pomodoro[0])
 
+    const timerRef = useRef(null)
+
+    const toggleTimer = () => {
+        if (timerRef.current) {
+            
+            clearInterval(timerRef.current)
+            return
+        }
+        const id = setInterval(() => {
+            console.log('Timer rolando')
+        }, 1000)
+        timerRef.current = id
+    }
     return (
         <View style= {styles.container}>
+            <DataAtual />
             <Image source={timerType.image} />
             <View style = {styles.actions}>
                 <View style={styles.context}>
-                    <Pressable style={styles.contextButtonActive}>
-                        <Text style={styles.contextButtonText}>
-                            Foco
-                        </Text>                      
-                    </Pressable>
-                    <Pressable>
-                        <Text style={styles.contextButtonText}>
-                                Pausa Curta
-                        </Text>
-                    </Pressable>
-                    <Pressable>
-                        <Text style={styles.contextButtonText}>
-                            Pausa Longa
-                        </Text>
-                    </Pressable>
+                    {pomodoro.map(p => (
+                        <ActionButton
+                            key={p.id} 
+                            active={ timerType.id === p.id }
+                            onPress={ () => setTimerType(p)}
+                            display={p.display}
+                        />
+                    ))}
                 </View>
-                <Text style={styles.timer}>
-                    { new Date(timerType.initialValue * 1000).toLocaleTimeString('pt-BR', { minute: '2-digit', second: '2-digit' }) }
-                </Text>
-                <Pressable style={styles.button}>
-                    <Text style={styles.buttonText}>
-                        Começar
-                    </Text>
-                </Pressable>
+                <Timer totalSeconds={timerType.initialValue}/>
+                <FokusButton 
+                    title={timerRef.current ? 'Pausar' : 'Começar'}
+                    onPress={toggleTimer}    
+                />
             </View>
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>
-                    Projeto fictício sem fins lucrativos.
-                </Text>
-            </View>
+            <Footer />
         </View>
     )
 }
@@ -86,39 +95,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center'
-    },
-    contextButtonText: {
-        fontSize: 12.5,
-        color: '#fff',
-        padding: 8
-    },
-    contextButtonActive: {
-        backgroundColor: '#144480',
-        borderRadius: 8
-    },
-    timer: {
-        fontSize: 54,
-        color: '#fff',
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    button: {
-        backgroundColor: '#b872ff',
-        borderRadius: 32,
-        padding: 8
-    },
-    buttonText: {
-        textAlign: 'center',
-        fontSize: 18,
-        color: '#021123'
-    },
-    footer: {
-        width: '80%',
-
-    },
-    footerText: {
-        textAlign: 'center',
-        color: '#98a0a8',
-        fontSize: 12.5
     }
 })
