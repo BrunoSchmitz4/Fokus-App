@@ -1,9 +1,10 @@
 import { Text, View, StyleSheet, Image } from "react-native"
 import { FokusButton } from '../components/FokusButton'
 import { Footer } from '../components/Footer'
-import { Link } from "expo-router"
+import { useRouter } from "expo-router";
 
 export default function Index() {
+    const router = useRouter();
     return (
         <View style={styles.container}>
             <Image source={require('../assets/images/FokusLogo.svg')} />
@@ -12,7 +13,7 @@ export default function Index() {
                     <Text style={styles.Bold}>mergulhe no que {'\n'}importa</Text>
                 </Text>
                 <Image source={ require('../assets/images/Imagem tela inicial.svg') }/>
-                <FokusButton title="Quero iniciar!" onPress={() => console.log('navegar ->')}/>
+                <FokusButton title="Quero iniciar!" onPress={() => router.push('/pomodoro')}/>
                 <Footer />
             </View>
         </View>
