@@ -13,7 +13,8 @@ export default function Index() {
                     <Text style={styles.Bold}>mergulhe no que {'\n'}importa</Text>
                 </Text>
                 <Image source={ require('../assets/images/Imagem tela inicial.svg') }/>
-                <FokusButton title="Quero iniciar!" onPress={() => router.push('/pomodoro')}/>
+                {/* Se eu quero uma navegação sem retorno, devo usar o replace, para reiniciar o stack */}
+                <FokusButton title="Quero iniciar!" onPress={() => router.navigate('/pomodoro')}/>
                 <Footer />
             </View>
         </View>
